@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>To Do App</title>
+</head>
+
+<body>
+    <header>
+        <h2>Linh Le</h2>
+        <input type="text" placeholder="Search here" id="search">
+    </header>
+    <main>
+        <h2>My To-do List</h2>
+        <div class="container">
+            <form id="add-form">
+                <div>
+                    <label for="title">Title</label>
+                    <input type="text" id="title" placeholder="Insert title">
+                </div>
+                <div>
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Insert description">
+                </div>
+                <button type="submit" id="submit-btn">Add form</button>
+            </form>
+            <p id="alert">Please insert input!</p>
+        </div>
+        <h2>Items</h2>
+        <ul id="todo-list" class="list-group">
+            <li class="list-group-item">
+                <div>
+                    <h3 class="item-name">Title 1</h3>
+                    <p>Description</p>
+                </div>
+                <div>
+                    <button type="button" class="complete">Complete</button>
+                    <button type="button" class="undo">Undo</button>
+                    <button type="button" class="remove">Delete</button>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div>
+                    <h3 class="item-name">Title 2</h3>
+                    <p>Description</p>
+                </div>
+                <div>
+                    <button type="button" class="complete">Complete</button>
+                    <button type="button" class="undo">Undo</button>
+                    <button type="button" class="remove">Delete</button>
+                </div>
+            </li>
+        </ul>
+        </div>
+
+    </main>
+    <script src="main.js"></script>
+</body>
+
+</html>
