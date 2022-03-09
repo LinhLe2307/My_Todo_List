@@ -3,12 +3,6 @@ const todoList = document.querySelector("#todo-list");
 const alertText = document.querySelector("#alert");
 const search = document.querySelector("#search");
 
-form.addEventListener("submit", addItem);
-todoList.addEventListener("click", removeItem);
-todoList.addEventListener("click", completeItem);
-todoList.addEventListener("click", undoItem);
-search.addEventListener("change", searchItem);
-
 // ADD ITEMS
 function addItem(e) {
   e.preventDefault();
@@ -22,6 +16,7 @@ function addItem(e) {
   }
 }
 
+// this is for creating title and description
 function createItem(title, description) {
   const li = document.createElement("li");
   const h3 = document.createElement("h3");
@@ -43,6 +38,7 @@ function createItem(title, description) {
   todoList.appendChild(li);
 }
 
+// this is for creating complete button, undo button, and delete button
 function createButton(li) {
   const complete = document.createElement("button");
   const remove = document.createElement("button");
@@ -82,16 +78,26 @@ function removeItem(e) {
 function completeItem() {
   const undoButtons = document.querySelectorAll(".undo");
   const completeButtons = document.querySelectorAll(".complete");
+
+  //we need to loop every complete button, otherwise it can only work for the first one
   completeButtons.forEach((button, i) => {
     button.addEventListener("click", (e) => {
       if (e.target.classList.contains("complete")) {
+        // we want to have the index of every li so that we know the button clicked belongs to which li => if matches, change the li
         document.querySelectorAll(".list-group-item").forEach((item, index) => {
           if (index === i) {
+            //change li style
             targetParent(e).style.backgroundColor = "#ab8d90";
+
+            //change h3, p style
             targetSiblingChild(e).forEach(
               (item) => (item.style.textDecoration = "line-through")
             );
+
+            //hide the complete
             button.style.display = "none";
+
+            //loop through undo button, if matches the complete button's index => display = "inline"
             undoButtons.forEach((undo, pos) => {
               if (index === pos) {
                 undo.style.display = "inline";
@@ -109,16 +115,26 @@ function completeItem() {
 function undoItem() {
   const undoButtons = document.querySelectorAll(".undo");
   const completeButtons = document.querySelectorAll(".complete");
+
+  //we need to loop every undo button, otherwise it can only work for the first one
   undoButtons.forEach((button, i) => {
     button.addEventListener("click", (e) => {
       if (e.target.classList.contains("undo")) {
+        // we want to have the index of every li so that we know the button clicked belongs to which li => if matches, change the li
         document.querySelectorAll(".list-group-item").forEach((item, index) => {
           if (index === i) {
+            //change li style
             targetParent(e).style.backgroundColor = "#f5cdff";
+
+            //change h3, p style
             targetSiblingChild(e).forEach(
               (item) => (item.style.textDecoration = "none")
             );
+
+            //hide the undo
             button.style.display = "none";
+
+            //loop through complete button, if matches the undo button's index => display = "inline"
             completeButtons.forEach((complete, pos) => {
               if (index === pos) {
                 complete.style.display = "inline";
@@ -131,9 +147,12 @@ function undoItem() {
   });
 }
 
+//this is for taking the li => parentElement of div => parentElement of e.target
 function targetParent(e) {
   return e.target.parentElement.parentElement;
 }
+
+//this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
 function targetSiblingChild(e) {
   return [...e.target.parentElement.previousElementSibling.children];
 }
@@ -151,3 +170,9 @@ function searchItem(e) {
     }
   });
 }
+
+form.addEventListener("submit", addItem);
+todoList.addEventListener("click", removeItem);
+todoList.addEventListener("click", completeItem);
+todoList.addEventListener("click", undoItem);
+search.addEventListener("change", searchItem);
