@@ -77,58 +77,64 @@ function removeItem(e) {
 
 // COMPLETED ITEMS
 
-function completeItem() {
+function completeAndUndo() {
   const undoButtons = document.querySelectorAll(".undo");
   const completeButtons = document.querySelectorAll(".complete");
-  const listGroupItems = document.querySelectorAll(".list-group-item");
 
   //we need to loop every complete button, otherwise it can only work for the first one
-  completeButtons.forEach((button, i) => {
-    button.addEventListener("click", (e) => {
-      if (e.target.classList.contains("complete")) {
-        [...listGroupItems][i].style.backgroundColor = "#ab8d90";
-        //change h3, p style
-        targetSiblingChild(e).forEach(
-          (item) => (item.style.textDecoration = "line-through")
-        );
-        //hide the undo
-        button.style.display = "none";
-        //undo button changed
-        [...undoButtons][i].style.display = "inline";
-      }
-    });
+  completeButtons.forEach((completeButton, i) => {
+    completeButton.addEventListener("click", (e) =>
+      changeBackground(
+        e,
+        completeButton,
+        i,
+        "complete",
+        "#ab8d90",
+        "line-through",
+        undoButtons
+      )
+    );
+  });
+
+  undoButtons.forEach((undoButton, i) => {
+    undoButton.addEventListener("click", (e) =>
+      changeBackground(
+        e,
+        undoButton,
+        i,
+        "undo",
+        "#f5cdff",
+        "none",
+        completeButtons
+      )
+    );
   });
 }
 
-// UNDO ITEMS
-
-function undoItem() {
-  const undoButtons = document.querySelectorAll(".undo");
-  const completeButtons = document.querySelectorAll(".complete");
-
+function changeBackground(
+  e,
+  buttonItem,
+  i,
+  buttonClassName,
+  backgroundColor,
+  textDecoration,
+  buttonLists
+) {
   const listGroupItems = document.querySelectorAll(".list-group-item");
+  if (e.target.classList.contains(buttonClassName)) {
+    [...listGroupItems][i].style.backgroundColor = backgroundColor;
 
-  //we need to loop every undo button, otherwise it can only work for the first one
-  undoButtons.forEach((button, i) => {
-    button.addEventListener("click", (e) => {
-      if (e.target.classList.contains("undo")) {
-        [...listGroupItems][i].style.backgroundColor = "#f5cdff";
-        //change h3, p style
-        targetSiblingChild(e).forEach(
-          (item) => (item.style.textDecoration = "none")
-        );
-        //hide the complete
-        button.style.display = "none";
-        //complete button changed
-        [...completeButtons][i].style.display = "inline";
-      }
-    });
-  });
-}
+    //this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
+    [...e.target.parentElement.previousElementSibling.children].forEach(
+      (item) => (item.style.textDecoration = textDecoration)
+    );
 
-//this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
-function targetSiblingChild(e) {
-  return [...e.target.parentElement.previousElementSibling.children];
+    //hide the complete
+    buttonItem.style.display = "none";
+
+    //complete button changed
+    [...buttonLists][i].style.display = "inline";
+  }
 }
 
 // SEARCH ITEM
@@ -147,6 +153,5 @@ function searchItem(e) {
 
 form.addEventListener("submit", addItem);
 todoList.addEventListener("click", removeItem);
-todoList.addEventListener("click", completeItem);
-todoList.addEventListener("click", undoItem);
+todoList.addEventListener("click", completeAndUndo);
 search.addEventListener("change", searchItem);
