@@ -132,7 +132,7 @@ function changeBackground(
     //hide the complete
     buttonItem.style.display = "none";
 
-    //complete button changed
+    //button changed
     [...buttonLists][i].style.display = "inline";
   }
 }
