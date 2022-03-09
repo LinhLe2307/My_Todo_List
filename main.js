@@ -67,8 +67,10 @@ function createButton(li) {
 // REMOVE ITEMS
 function removeItem(e) {
   if (e.target.classList.contains("remove")) {
+    //this is for taking the li => parentElement of div => parentElement of e.target
+    const li = e.target.parentElement.parentElement;
     if (confirm("Are you sure?")) {
-      todoList.removeChild(targetParent(e));
+      todoList.removeChild(li);
     }
   }
 }
@@ -78,33 +80,21 @@ function removeItem(e) {
 function completeItem() {
   const undoButtons = document.querySelectorAll(".undo");
   const completeButtons = document.querySelectorAll(".complete");
+  const listGroupItems = document.querySelectorAll(".list-group-item");
 
   //we need to loop every complete button, otherwise it can only work for the first one
   completeButtons.forEach((button, i) => {
     button.addEventListener("click", (e) => {
       if (e.target.classList.contains("complete")) {
-        // we want to have the index of every li so that we know the button clicked belongs to which li => if matches, change the li
-        document.querySelectorAll(".list-group-item").forEach((item, index) => {
-          if (index === i) {
-            //change li style
-            targetParent(e).style.backgroundColor = "#ab8d90";
-
-            //change h3, p style
-            targetSiblingChild(e).forEach(
-              (item) => (item.style.textDecoration = "line-through")
-            );
-
-            //hide the complete
-            button.style.display = "none";
-
-            //loop through undo button, if matches the complete button's index => display = "inline"
-            undoButtons.forEach((undo, pos) => {
-              if (index === pos) {
-                undo.style.display = "inline";
-              }
-            });
-          }
-        });
+        [...listGroupItems][i].style.backgroundColor = "#ab8d90";
+        //change h3, p style
+        targetSiblingChild(e).forEach(
+          (item) => (item.style.textDecoration = "line-through")
+        );
+        //hide the complete
+        button.style.display = "none";
+        //undo button changed
+        [...undoButtons][i].style.display = "inline";
       }
     });
   });
@@ -116,40 +106,24 @@ function undoItem() {
   const undoButtons = document.querySelectorAll(".undo");
   const completeButtons = document.querySelectorAll(".complete");
 
+  const listGroupItems = document.querySelectorAll(".list-group-item");
+
   //we need to loop every undo button, otherwise it can only work for the first one
   undoButtons.forEach((button, i) => {
     button.addEventListener("click", (e) => {
       if (e.target.classList.contains("undo")) {
-        // we want to have the index of every li so that we know the button clicked belongs to which li => if matches, change the li
-        document.querySelectorAll(".list-group-item").forEach((item, index) => {
-          if (index === i) {
-            //change li style
-            targetParent(e).style.backgroundColor = "#f5cdff";
-
-            //change h3, p style
-            targetSiblingChild(e).forEach(
-              (item) => (item.style.textDecoration = "none")
-            );
-
-            //hide the undo
-            button.style.display = "none";
-
-            //loop through complete button, if matches the undo button's index => display = "inline"
-            completeButtons.forEach((complete, pos) => {
-              if (index === pos) {
-                complete.style.display = "inline";
-              }
-            });
-          }
-        });
+        [...listGroupItems][i].style.backgroundColor = "#f5cdff";
+        //change h3, p style
+        targetSiblingChild(e).forEach(
+          (item) => (item.style.textDecoration = "none")
+        );
+        //hide the complete
+        button.style.display = "none";
+        //complete button changed
+        [...completeButtons][i].style.display = "inline";
       }
     });
   });
-}
-
-//this is for taking the li => parentElement of div => parentElement of e.target
-function targetParent(e) {
-  return e.target.parentElement.parentElement;
 }
 
 //this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
