@@ -91,7 +91,7 @@ function completeItem() {
         targetSiblingChild(e).forEach(
           (item) => (item.style.textDecoration = "line-through")
         );
-        //hide the complete
+        //hide the undo
         button.style.display = "none";
         //undo button changed
         [...undoButtons][i].style.display = "inline";
