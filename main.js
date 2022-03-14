@@ -4,6 +4,16 @@ const alertText = document.querySelector("#alert");
 const search = document.querySelector("#search");
 
 // ADD ITEMS
+
+//getting it from localStorage
+let itemsArray = localStorage.getItem("items")
+  ? JSON.parse(localStorage.getItem("items"))
+  : [];
+//saving it locally
+localStorage.setItem("items", JSON.stringify(itemsArray));
+
+const data = JSON.parse(localStorage.getItem("items"));
+
 function addItem(e) {
   e.preventDefault();
   const title = document.querySelector("#title").value;
@@ -14,6 +24,8 @@ function addItem(e) {
   } else {
     alertText.style.display = "block";
   }
+  itemsArray.push(title);
+  localStorage.setItem("items", JSON.stringify(itemsArray));
 }
 
 // this is for creating title and description
@@ -73,67 +85,32 @@ function removeItem(e) {
       todoList.removeChild(li);
     }
   }
+  // localStorage.removeItem(itemsArray);
 }
 
 // COMPLETED ITEMS
 
-function completeAndUndo() {
-  const undoButtons = document.querySelectorAll(".undo");
-  const completeButtons = document.querySelectorAll(".complete");
+function completeAndUndo(e) {
+  console.log(e.target);
+  const li = e.target.parentElement.parentElement;
+  const titleAndDescription =
+    e.target.parentElement.previousElementSibling.children;
 
-  //we need to loop every complete button, otherwise it can only work for the first one
-  completeButtons.forEach((completeButton, i) => {
-    completeButton.addEventListener("click", (e) =>
-      changeBackground(
-        e,
-        completeButton,
-        i,
-        "complete",
-        "#ab8d90",
-        "line-through",
-        undoButtons
-      )
+  if (e.target.classList.contains("complete")) {
+    li.style.backgroundColor = "#ab8d90";
+    [...titleAndDescription].forEach(
+      (item) => (item.style.textDecoration = "line-through")
     );
-  });
-
-  undoButtons.forEach((undoButton, i) => {
-    undoButton.addEventListener("click", (e) =>
-      changeBackground(
-        e,
-        undoButton,
-        i,
-        "undo",
-        "#f5cdff",
-        "none",
-        completeButtons
-      )
+    e.target.style.display = "none";
+    e.target.nextElementSibling.style.display = "inline";
+  }
+  if (e.target.classList.contains("undo")) {
+    li.style.backgroundColor = "#f5cdff";
+    [...titleAndDescription].forEach(
+      (item) => (item.style.textDecoration = "none")
     );
-  });
-}
-
-function changeBackground(
-  e,
-  buttonItem,
-  i,
-  buttonClassName,
-  backgroundColor,
-  textDecoration,
-  buttonLists
-) {
-  const listGroupItems = document.querySelectorAll(".list-group-item");
-  if (e.target.classList.contains(buttonClassName)) {
-    [...listGroupItems][i].style.backgroundColor = backgroundColor;
-
-    //this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
-    [...e.target.parentElement.previousElementSibling.children].forEach(
-      (item) => (item.style.textDecoration = textDecoration)
-    );
-
-    //hide the complete
-    buttonItem.style.display = "none";
-
-    //button changed
-    [...buttonLists][i].style.display = "inline";
+    e.target.style.display = "none";
+    e.target.previousElementSibling.style.display = "inline";
   }
 }
 
@@ -155,3 +132,63 @@ form.addEventListener("submit", addItem);
 todoList.addEventListener("click", removeItem);
 todoList.addEventListener("click", completeAndUndo);
 search.addEventListener("change", searchItem);
+
+// ANOTHER WAY TO DO THE COMPLETE AND UNDO BUTTONS
+
+// function completeAndUndo(e) {
+//   const undoButtons = document.querySelectorAll(".undo");
+//   const completeButtons = document.querySelectorAll(".complete");
+// completeButtons.forEach((completeButton, i) => {
+//   completeButton.addEventListener("click", (e) =>
+//     changeBackground(
+//       e,
+//       completeButton,
+//       i,
+//       "complete",
+//       "#ab8d90",
+//       "line-through",
+//       undoButtons
+//     )
+//   );
+// });
+
+// undoButtons.forEach((undoButton, i) => {
+//   undoButton.addEventListener("click", (e) =>
+//     changeBackground(
+//       e,
+//       undoButton,
+//       i,
+//       "undo",
+//       "#f5cdff",
+//       "none",
+//       completeButtons
+//     )
+//   );
+// });
+// }
+
+// function changeBackground(
+//   e,
+//   buttonItem,
+//   i,
+//   buttonClassName,
+//   backgroundColor,
+//   textDecoration,
+//   buttonLists
+// ) {
+//   const listGroupItems = document.querySelectorAll(".list-group-item");
+//   if (e.target.classList.contains(buttonClassName)) {
+//     [...listGroupItems][i].style.backgroundColor = backgroundColor;
+
+//     //this is for taking the h3, p => child of first div => sibling of second div => parentElement of e.target
+//     [...e.target.parentElement.previousElementSibling.children].forEach(
+//       (item) => (item.style.textDecoration = textDecoration)
+//     );
+
+//     //hide the complete
+//     buttonItem.style.display = "none";
+
+//     //button changed
+//     [...buttonLists][i].style.display = "inline";
+//   }
+// }
