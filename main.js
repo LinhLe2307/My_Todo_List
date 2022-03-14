@@ -2,6 +2,8 @@ const form = document.querySelector("#add-form");
 const todoList = document.querySelector("#todo-list");
 const alertText = document.querySelector("#alert");
 const search = document.querySelector("#search");
+const title = document.querySelector("#title");
+const description = document.querySelector("#description");
 
 // ADD ITEMS
 
@@ -9,23 +11,23 @@ const search = document.querySelector("#search");
 let itemsArray = localStorage.getItem("items")
   ? JSON.parse(localStorage.getItem("items"))
   : [];
+
 //saving it locally
 localStorage.setItem("items", JSON.stringify(itemsArray));
-
 const data = JSON.parse(localStorage.getItem("items"));
 
 function addItem(e) {
   e.preventDefault();
-  const title = document.querySelector("#title").value;
-  const description = document.querySelector("#description").value;
-  if (title != "" && description != "") {
-    createItem(title, description);
+  if (title.value != "" && description.value != "") {
+    createItem(title.value, description.value);
+    itemsArray.push([title.value, description.value]);
+    localStorage.setItem("items", JSON.stringify(itemsArray));
     alertText.style.display = "none";
   } else {
     alertText.style.display = "block";
   }
-  itemsArray.push(title);
-  localStorage.setItem("items", JSON.stringify(itemsArray));
+  title.value = "";
+  description.value = "";
 }
 
 // this is for creating title and description
@@ -60,6 +62,7 @@ function createButton(li) {
   complete.classList.add("complete");
   undo.classList.add("undo");
   remove.classList.add("remove");
+  div.classList.add("button-group");
 
   complete.setAttribute("type", "button");
   undo.setAttribute("type", "button");
@@ -81,17 +84,30 @@ function removeItem(e) {
   if (e.target.classList.contains("remove")) {
     //this is for taking the li => parentElement of div => parentElement of e.target
     const li = e.target.parentElement.parentElement;
+    const titleName = e.target.parentElement.previousElementSibling.firstChild;
+    const descriptionName = [
+      ...e.target.parentElement.previousElementSibling.children,
+    ][1];
     if (confirm("Are you sure?")) {
       todoList.removeChild(li);
     }
+    const newData = JSON.parse(localStorage.getItem("items"));
+    for (let i of data) {
+      if (
+        i[0] === titleName.textContent &&
+        i[1] === descriptionName.textContent
+      ) {
+        console.log("i data", i, data.indexOf(i));
+        newData.splice(data.indexOf(i), 1);
+        localStorage.setItem("items", JSON.stringify(newData));
+      }
+    }
   }
-  // localStorage.removeItem(itemsArray);
 }
 
 // COMPLETED ITEMS
 
 function completeAndUndo(e) {
-  console.log(e.target);
   const li = e.target.parentElement.parentElement;
   const titleAndDescription =
     e.target.parentElement.previousElementSibling.children;
@@ -127,6 +143,8 @@ function searchItem(e) {
     }
   });
 }
+
+data.forEach((item) => createItem(item[0], item[1]));
 
 form.addEventListener("submit", addItem);
 todoList.addEventListener("click", removeItem);
