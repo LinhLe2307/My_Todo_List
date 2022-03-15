@@ -14,13 +14,14 @@ let itemsArray = localStorage.getItem("items")
 
 //saving it locally
 localStorage.setItem("items", JSON.stringify(itemsArray));
-const data = JSON.parse(localStorage.getItem("items"));
+let data = JSON.parse(localStorage.getItem("items"));
 
 function addItem(e) {
   e.preventDefault();
   if (title.value != "" && description.value != "") {
     createItem(title.value, description.value);
     itemsArray.push([title.value, description.value]);
+    data.push([title.value, description.value]);
     localStorage.setItem("items", JSON.stringify(itemsArray));
     alertText.style.display = "none";
   } else {
@@ -91,17 +92,19 @@ function removeItem(e) {
     if (confirm("Are you sure?")) {
       todoList.removeChild(li);
     }
-    const newData = JSON.parse(localStorage.getItem("items"));
+    let newData = JSON.parse(localStorage.getItem("items"));
     for (let i of data) {
       if (
         i[0] === titleName.textContent &&
         i[1] === descriptionName.textContent
       ) {
-        console.log("i data", i, data.indexOf(i));
+        // console.log("i data", i, data.indexOf(i));
         newData.splice(data.indexOf(i), 1);
-        localStorage.setItem("items", JSON.stringify(newData));
+        data = newData;
       }
     }
+    localStorage.setItem("items", JSON.stringify(data));
+    console.log("DATA: ", data);
   }
 }
 
